@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     for (uint32_t current_fit_function = 0; current_fit_function < sizeof(fitness_functions) / sizeof(fitness_functions[0]); current_fit_function++)
     {
         printf("Executando o algoritmo %d...", current_fit_function);
+        fflush(stdout);
         genetic_algorithm(population, fitness_functions[current_fit_function]);
         printf("Pronto!\n");
     }

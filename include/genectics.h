@@ -20,7 +20,9 @@
 typedef struct _chromossome_ {
     double*           genes;
     double            fitness;
-    uint8_t           sels;
+    double            old_fitness;
+    uint8_t           selections;
+    uint8_t           old_selections;
     bool              mutated;
 } Chromossome;
 
