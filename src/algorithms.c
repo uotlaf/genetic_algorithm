@@ -45,11 +45,21 @@ void populate(
     population->current_generation = 0;
 }
 
+int fixOutOfBoundValues(double *xr, double linf, double lsup)
+{
+	if ((*xr) > lsup)
+		*xr = lsup - RANDOM * ((*xr) - lsup) / ((*xr) - linf);
+	else if ((*xr) < linf)
+		*xr = linf + RANDOM * (linf - (*xr)) / (lsup - (*xr));
+	return (1);
+}
+
 
 // Mutation - If chance > mutation rate, 
 void mutation(
     Population* population,
     uint64_t individual) {
+        assert(population);
         assert(population->mutation_chance != 0);
         assert(individual < population->size);
 
@@ -59,14 +69,31 @@ void mutation(
                 double new_gene = population->lower_gene_limit + (RANDOM * (population->upper_gene_limit - population->lower_gene_limit));
                 population->individuals[individual].genes[current_gene] = new_gene;
                 population->individuals[individual].mutated = true;
+                fixOutOfBoundValues(&(population->individuals[individual].genes[current_gene]), population->lower_gene_limit, population->upper_gene_limit);
             }
         }
     }
 
 // Crossover - if chance > crossover rate
 void crossover(
-    Chromossome a;
-)
+    Population* population,
+    uint64_t father, uint64_t mother, uint64_t son, float alpha
+) {
+    assert(population);
+    assert(population->crossover_chance != 0);
+    assert(father < population->size);
+    assert(mother < population->size);
+    assert(son < population->size);
+
+    for (uint32_t current_gene = 0; current_gene < population->genes_per_individual; current_gene++) {
+        double random_value = (-alpha) + ( RANDOM ) * ( (1 + alpha) - (-alpha) );
+        population->individuals[son].genes[current_gene] = 
+            population->individuals[father].genes[current_gene] + 
+            random_value * (population->individuals[mother].genes[current_gene] +
+            population->individuals[father].genes[current_gene]);
+            fixOutOfBoundValues( &(population->individuals[son].genes[current_gene]), population->lower_gene_limit, population->upper_gene_limit);
+    }
+}
 
 void genetic_algorithm(
     Population* population, 
@@ -75,11 +102,26 @@ void genetic_algorithm(
         
         for (uint32_t individual = 0; individual < population->size; individual++) {
             
-            // Mutation
-            mutation(population, individual);
 
-            // Crossover
+            // Crossover chance
+            if (RANDOM < population->mutation_chance) {
+                uint32_t father = population->individuals[individual].genes[rand() % population->genes_per_individual];
+                uint32_t mother = population->individuals[individual].genes[rand() % population->genes_per_individual];
 
+                if (father != mother) {
+                    crossover(
+                        population, father, mother, individual,
+                        XALPHA * (1.0 - (double) population->current_generation / population->max_generation)
+                    );
+
+                    // Recalculate fitness
+                    population->individuals[individual].fitness = fitness_function(population->individuals[individual].genes, population->genes_per_individual);
+
+                    // Mutation
+                    mutation(population, individual);
+
+                }
+            }
         }
 
         population->current_generation++;

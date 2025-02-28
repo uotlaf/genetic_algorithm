@@ -20,16 +20,17 @@ int main(int argc, char* argv[]) {
     population->lower_gene_limit     = DEFAULT_LOWER_GENE_LIMIT;
     population->upper_gene_limit     = DEFAULT_UPPER_GENE_LIMIT;
     population->mutation_chance      = DEFAULT_MUTATION_CHANCE_PERCENT;
+    population->crossover_chance     = DEFAULT_CROSSOVER_CHANCE_PERCENT;
     population->max_generation       = DEFAULT_MAX_GENERATIONS;
 
     printf("Pré-boot:\n");
-    printf("dsda%ld", sizeof(double (*) (double, int)));
     printf("\tNúmero máximo de threads: %d\n", omp_get_max_threads());
     printf("\tTamanho da população: %ld\n", population->size);
     printf("\tGenes por indivíduo: %d\n", population->genes_per_individual);
     printf("\tValor mínimo dos genes: %f\n", population->lower_gene_limit);
     printf("\tValor máximo dos genes: %f\n", population->upper_gene_limit);
     printf("\tChance de mutação: %d%%\n", population->mutation_chance);
+    printf("\tChance de cruzamento: %d%%\n", population->crossover_chance);
     printf("\tLimite de gerações: %d\n", population->max_generation);
 
     printf("Dica: Utilize a variável de ambiente OMP_NUM_THREADS para configurar o número máximo de threads\n");

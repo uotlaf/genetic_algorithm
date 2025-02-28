@@ -3,8 +3,7 @@
 #include <stdbool.h>
 
 // Variáveis de seleção e cruzamento
-#define PREBATI (rand() % 101 / 100.F)
-#define XALFA 0.25
+#define XALPHA 0.25
 
 // Mutação
 #define PMUTAC 50
@@ -36,6 +35,7 @@ typedef struct _population_ {
 //    uint32_t        best;
 //    uint32_t        worst;
     uint32_t        mutation_chance;
+    uint32_t        crossover_chance;
 //    uint32_t        equals;
 //    uint32_t        best_generation;
 
